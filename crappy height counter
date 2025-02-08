@@ -1,0 +1,72 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local heightLabel = Instance.new("TextLabel")
+heightLabel.Size = UDim2.new(0.2, 0, 0.05, 0)
+heightLabel.Position = UDim2.new(0.4, 0, 0.05, 0)
+heightLabel.BackgroundTransparency = 1
+heightLabel.TextScaled = true
+heightLabel.Font = Enum.Font.SourceSansBold
+heightLabel.TextColor3 = Color3.new(1, 1, 1)
+heightLabel.Text = "Height: 0"
+heightLabel.Parent = screenGui
+
+local highestLabel = Instance.new("TextLabel")
+highestLabel.Size = UDim2.new(0.2, 0, 0.05, 0)
+highestLabel.Position = UDim2.new(0.4, 0, 0.1, 0)
+highestLabel.BackgroundTransparency = 1
+highestLabel.TextScaled = true
+highestLabel.Font = Enum.Font.SourceSansBold
+highestLabel.TextColor3 = Color3.new(1, 1, 1)
+highestLabel.Text = "Highest: 0"
+highestLabel.Parent = screenGui
+
+local resettableHighLabel = Instance.new("TextLabel")
+resettableHighLabel.Size = UDim2.new(0.2, 0, 0.05, 0)
+resettableHighLabel.Position = UDim2.new(0.4, 0, 0.15, 0)
+resettableHighLabel.BackgroundTransparency = 1
+resettableHighLabel.TextScaled = true
+resettableHighLabel.Font = Enum.Font.SourceSansBold
+resettableHighLabel.TextColor3 = Color3.new(1, 1, 1)
+resettableHighLabel.Text = "Resettable High: 0"
+resettableHighLabel.Parent = screenGui
+
+local resetButton = Instance.new("TextButton")
+resetButton.Size = UDim2.new(0.1, 0, 0.05, 0)
+resetButton.Position = UDim2.new(0.6, 0, 0.15, 0)
+resetButton.BackgroundColor3 = Color3.new(1, 0, 0)
+resetButton.TextScaled = true
+resetButton.Font = Enum.Font.SourceSansBold
+resetButton.TextColor3 = Color3.new(1, 1, 1)
+resetButton.Text = "Reset"
+resetButton.Parent = screenGui
+
+local startHeight = humanoidRootPart.Position.Y
+local highestHeight = 0
+local resettableHighScore = 0
+
+local runService = game:GetService("RunService")
+runService.RenderStepped:Connect(function()
+    local currentHeight = humanoidRootPart.Position.Y
+    local heightDifference = math.floor(currentHeight - startHeight)
+    heightLabel.Text = "Height: " .. heightDifference
+    
+    if heightDifference > highestHeight then
+        highestHeight = heightDifference
+        highestLabel.Text = "Highest: " .. highestHeight
+    end
+    
+    if heightDifference > resettableHighScore then
+        resettableHighScore = heightDifference
+        resettableHighLabel.Text = "Resettable High: " .. resettableHighScore
+    end
+end)
+
+resetButton.MouseButton1Click:Connect(function()
+    resettableHighScore = 0
+    resettableHighLabel.Text = "Resettable High: 0"
+end)
